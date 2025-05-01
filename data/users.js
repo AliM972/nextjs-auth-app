@@ -1,2 +1,2 @@
 // data/users.js
-export const users = [];
+export const users = global.users || (global.users = []);

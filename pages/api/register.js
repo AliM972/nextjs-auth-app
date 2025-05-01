@@ -1,6 +1,7 @@
-import bcrypt from 'bcryptjs';
+// pages/api/register.js
 
-import { users } from '../../data/users'; 
+import bcrypt from 'bcryptjs';
+import { users } from '../../data/users.js'; 
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
