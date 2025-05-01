@@ -14,6 +14,11 @@ export default async function handler(req, res) {
   const trimmedName  = name.trim();
   const trimmedEmail = email.trim();
 
+  // Reject names longer than 50 characters
+  if (trimmedName.length > 50) {
+    return res.status(400).json({ message: 'Name must be at most 50 characters long' });
+  }
+
   // Basic validation
   if (!trimmedName || !trimmedEmail || !password) {
     return res.status(400).json({ message: 'Missing fields' });

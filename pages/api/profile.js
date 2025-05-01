@@ -33,6 +33,11 @@ export default function handler(req, res) {
       return res.status(400).json({ message: 'Missing fields' });
     }
 
+    // Reject names longer than 50 characters
+    if (newName.trim().length > 50) {
+      return res.status(400).json({ message: 'Name must be at most 50 characters long' });
+    }
+
     // Prevent changing to an email someone else already registered
     const normalizedNewEmail = newEmail.toLowerCase();
     const collision = users.findIndex((u, i) =>
