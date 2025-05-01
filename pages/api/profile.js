@@ -33,9 +33,18 @@ export default function handler(req, res) {
       return res.status(400).json({ message: 'Missing fields' });
     }
 
+    // Prevent changing to an email someone else already registered
+    const normalizedNewEmail = newEmail.toLowerCase();
+    const collision = users.findIndex((u, i) =>
+      i !== idx && u.email.toLowerCase() === normalizedNewEmail
+    );
+    if (collision !== -1) {
+      return res.status(409).json({ message: 'Email already in use' });
+    }
+
     // Update in-memory
     users[idx].name = newName;
-    users[idx].email = newEmail;
+    users[idx].email = normalizedNewEmail;
 
     // Rotate the session cookie to use the new email
     res.setHeader(
