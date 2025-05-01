@@ -15,6 +15,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'Missing fields' });
   }
 
+  // Prevent registering the same email twice
+  if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+    return res.status(409).json({ message: 'Email already in use' });
+  }
+
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
 
