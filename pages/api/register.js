@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 
-// In-memory store for registered users
-const users = [];
+import { users } from '../../data/users'; 
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
