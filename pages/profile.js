@@ -1,7 +1,8 @@
 // pages/profile.js
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import styles from './register.module.css'; // reuse
+import styles from './register.module.css';
 
 export default function Profile() {
   const router = useRouter();
@@ -9,7 +10,7 @@ export default function Profile() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // 1. Fetch profile on mount
+  // Fetch profile on mount
   useEffect(() => {
     fetch('/api/profile')
       .then(res => {
@@ -20,14 +21,11 @@ export default function Profile() {
         setName(data.name);
         setEmail(data.email);
       })
-      .catch(() => {
-        // If not logged in, redirect to login
-        router.push('/login');
-      })
+      .catch(() => router.push('/login'))
       .finally(() => setLoading(false));
   }, [router]);
 
-  // 2. Handle updates
+  // Handle updates
   const handleSubmit = async e => {
     e.preventDefault();
     try {
@@ -75,6 +73,17 @@ export default function Profile() {
           Update Profile
         </button>
       </form>
+
+      <button
+        onClick={async () => {
+          await fetch('/api/logout', { method: 'POST' });
+          router.push('/login');
+        }}
+        className={styles.submitBtn}
+        style={{ marginTop: '1rem', background: '#e00' }}
+      >
+        Logout
+      </button>
     </div>
   );
 }
