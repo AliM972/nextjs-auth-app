@@ -8,10 +8,29 @@ export default function Register() {
     const [password, setPassword] = useState('');
 
     // 2. Handle form submission
-    const handleSubmit = e => {
-        e.preventDefault();            // prevent page reload
-        console.log({ name, email, password });
-        // └ for now, just log the values
+  const handleSubmit = async (e) => {
+    e.preventDefault();      // stop full page reload
+
+    try {
+        const res = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await res.json();
+        console.log('Server response:', data);
+
+        if (!res.ok) {
+            throw new Error(data.message || 'Registration failed');
+        }
+
+        // Success! You could clear the form or show a message here:
+        alert('Registered successfully! You can now log in.');
+        } catch (err) {
+        console.error('Registration error:', err);
+        alert('Error: ' + err.message);
+        }
     };
 
     return (
