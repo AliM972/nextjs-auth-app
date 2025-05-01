@@ -10,14 +10,17 @@ export default async function handler(req, res) {
     }
 
     const { email, password } = req.body;
-    if (!email || !password) {
+    // Trim whitespace and lowercase
+    const lookupEmail = email.trim().toLowerCase();
+
+    if (!lookupEmail || !password) {
         return res.status(400).json({ message: 'Missing fields' });
     }
 
-    console.log('🔑 Current users array at login:', users);
+    console.log('Current users array at login:', users);
 
-    // Find the user
-    const user = users.find(u => u.email === email);
+    // Find the user by normalized email
+    const user = users.find(u => u.email === lookupEmail);
     if (!user) {
         return res.status(401).json({ message: 'Invalid email or password' });
     }
@@ -28,9 +31,9 @@ export default async function handler(req, res) {
         return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Set a session cookie (holding their email)
+    // Set a session cookie (holding the normalized email)
     res.setHeader('Set-Cookie', 
-        serialize('session', email, {
+        serialize('session', lookupEmail, {
             httpOnly: true,
             path: '/',
             maxAge: 60 * 60 * 24, // 1 day
