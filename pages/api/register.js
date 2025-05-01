@@ -10,19 +10,23 @@ export default async function handler(req, res) {
 
   const { name, email, password } = req.body;
 
+  // Trim whitespace
+  const trimmedName  = name.trim();
+  const trimmedEmail = email.trim();
+
   // Basic validation
-  if (!name || !email || !password) {
+  if (!trimmedName || !trimmedEmail || !password) {
     return res.status(400).json({ message: 'Missing fields' });
   }
 
   // Simple email format validation
-  const normalizedEmail = email.toLowerCase();
+  const normalizedEmail = trimmedEmail.toLowerCase();
   if (!normalizedEmail.includes('@') || !normalizedEmail.includes('.')) {
     return res.status(400).json({ message: 'Invalid email address' });
   }
 
   // Prevent registering the same email twice
-  if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+  if (users.some(u => u.email === normalizedEmail)) {
     return res.status(409).json({ message: 'Email already in use' });
   }
 
@@ -35,7 +39,7 @@ export default async function handler(req, res) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   // Save user (in memory)
-  users.push({ name, email: normalizedEmail, password: hashedPassword });
+  users.push({ name: trimmedName, email: normalizedEmail, password: hashedPassword });
 
   // For debugging, log the users array on the server
   console.log('Registered users:', users);
