@@ -1,7 +1,7 @@
 // pages/api/register.js
 
 import bcrypt from 'bcryptjs';
-import { users } from '../../data/users.js'; 
+import { users, saveUsers } from '../../data/users';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -45,6 +45,7 @@ export default async function handler(req, res) {
 
   // Save user (in memory)
   users.push({ name: trimmedName, email: normalizedEmail, password: hashedPassword });
+  saveUsers();
 
   // For debugging, log the users array on the server
   console.log('Registered users:', users);

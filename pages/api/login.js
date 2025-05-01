@@ -1,7 +1,7 @@
 // pages/api/login.js
 
 import bcrypt from 'bcryptjs';
-import { users } from '../../data/users.js';
+import { users, saveUsers } from '../../data/users';
 import { serialize } from 'cookie';
 
 export default async function handler(req, res) {

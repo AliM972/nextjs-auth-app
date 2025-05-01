@@ -1,6 +1,6 @@
 // pages/api/profile.js
 
-import { users } from '../../data/users';
+import { users, saveUsers } from '../../data/users';
 import { parse, serialize } from 'cookie';
 
 export default function handler(req, res) {
@@ -50,6 +50,7 @@ export default function handler(req, res) {
     // Update in-memory
     users[idx].name = newName;
     users[idx].email = normalizedNewEmail;
+    saveUsers();
 
     // Rotate the session cookie to use the new email
     res.setHeader(
