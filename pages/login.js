@@ -1,7 +1,12 @@
+// pages/login.js
+
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 import styles from './register.module.css'; // reuse the same styles
 
 export default function Login() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -15,8 +20,9 @@ export default function Login() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      alert('Logged in successfully!');
-      // TODO: redirect to /profile
+      // Success → notify then redirect
+      alert('Login successful! Redirecting to your profile.');
+      router.push('/profile');
     } catch (err) {
       alert('Error: ' + err.message);
     }
@@ -52,6 +58,9 @@ export default function Login() {
           Login
         </button>
       </form>
+      <p style={{ textAlign: 'center', marginTop: '1rem' }}>
+        New here? <Link href="/register">Register an account</Link>
+      </p>
     </div>
   );
 }
