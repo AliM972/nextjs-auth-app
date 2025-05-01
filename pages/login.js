@@ -3,11 +3,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import styles from './register.module.css'; // reuse the same styles
 
 export default function Login() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e) => {
@@ -20,7 +19,6 @@ export default function Login() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
-      // Success → notify then redirect
       alert('Login successful! Redirecting to your profile.');
       router.push('/profile');
     } catch (err) {
@@ -29,13 +27,14 @@ export default function Login() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
-        <div className={styles.formGroup}>
+        <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
             id="email"
+            className="input"
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
@@ -43,10 +42,11 @@ export default function Login() {
           />
         </div>
 
-        <div className={styles.formGroup}>
+        <div className="form-group">
           <label htmlFor="password">Password</label>
           <input
             id="password"
+            className="input"
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
@@ -54,13 +54,20 @@ export default function Login() {
           />
         </div>
 
-        <button type="submit" className={styles.submitBtn}>
+        <button
+          type="submit"
+          className="btn btn-block btn-lg"
+        >
           Login
         </button>
       </form>
-      <p style={{ textAlign: 'center', marginTop: '1rem' }}>
-        New here? <Link href="/register">Register an account</Link>
-      </p>
+
+      <div className="form-footer">
+        New here?{' '}
+        <Link href="/register" legacyBehavior>
+          <a>Register an account</a>
+        </Link>
+      </div>
     </div>
   );
 }
