@@ -1,7 +1,14 @@
+// pages/register.js
+
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 import styles from './register.module.css'; 
 
 export default function Register() {
+    
+    const router = useRouter();
+
     // 1. State for form fields
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -25,8 +32,9 @@ export default function Register() {
             throw new Error(data.message || 'Registration failed');
         }
 
-        // Success! You could clear the form or show a message here:
-        alert('Registered successfully! You can now log in.');
+        // Success → notify then redirect to login page
+        alert('Registration successful! Redirecting you to the login page.');
+        router.push('/login');
         } catch (err) {
         console.error('Registration error:', err);
         alert('Error: ' + err.message);
@@ -74,6 +82,10 @@ export default function Register() {
                 Register
                 </button>
             </form>
+            <p style={{ textAlign: 'center', marginTop: '1rem' }}>
+                Already have an account?{' '}
+                <Link href="/login">Log in here</Link>
+            </p>
         </div>
     );
 }
