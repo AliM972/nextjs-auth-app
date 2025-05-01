@@ -1,0 +1,56 @@
+// pages/api/profile.js
+
+import { users } from '../../data/users';
+import { parse, serialize } from 'cookie';
+
+export default function handler(req, res) {
+  // 1. Read & parse cookies
+  const cookieHeader = req.headers.cookie;
+  if (!cookieHeader) {
+    return res.status(401).json({ message: 'Not authenticated' });
+  }
+  const { session: email } = parse(cookieHeader);
+  if (!email) {
+    return res.status(401).json({ message: 'Not authenticated' });
+  }
+
+  // 2. Find the user in memory
+  const idx = users.findIndex(u => u.email === email);
+  if (idx === -1) {
+    return res.status(401).json({ message: 'Invalid session' });
+  }
+
+  // 3. Handle GET: return name & email
+  if (req.method === 'GET') {
+    const { name, email: userEmail } = users[idx];
+    return res.status(200).json({ name, email: userEmail });
+  }
+
+  // 4. Handle PUT: update name & email
+  if (req.method === 'PUT') {
+    const { name: newName, email: newEmail } = req.body;
+    if (!newName || !newEmail) {
+      return res.status(400).json({ message: 'Missing fields' });
+    }
+
+    // Update in-memory
+    users[idx].name = newName;
+    users[idx].email = newEmail;
+
+    // Rotate the session cookie to use the new email
+    res.setHeader(
+      'Set-Cookie',
+      serialize('session', newEmail, {
+        httpOnly: true,
+        path: '/',
+        maxAge: 60 * 60 * 24, // 1 day
+      })
+    );
+
+    return res.status(200).json({ message: 'Profile updated' });
+  }
+
+  // 5. Other methods not allowed
+  res.setHeader('Allow', ['GET', 'PUT']);
+  return res.status(405).end(`Method ${req.method} Not Allowed`);
+}
