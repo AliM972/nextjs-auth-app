@@ -26,6 +26,11 @@ export default async function handler(req, res) {
     return res.status(409).json({ message: 'Email already in use' });
   }
 
+  // Password strength validation
+  if (password.length < 6) {
+    return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+  }
+
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
 
